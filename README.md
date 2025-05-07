@@ -1,8 +1,8 @@
-A full-stack chat application built with React, Next.js, Node.js and Socket.io.
+A full-stack chat application was built with Next.js, TypeScript, Node.js, and Socket.io.
 Features:
 - User authentication
 - Real-time messaging
-- Emoji,image and audio message support
+- Emoji, image and audio message support
 - Online/Offline user tracking
 - Message deletion
 Tech stack:
@@ -11,5 +11,5 @@ Frontend:
 - TypeScript
 - Tailwind CSS
 Backend:
-Node.js
-Express.js
+- Node.js
+- Express.js
