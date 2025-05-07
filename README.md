@@ -6,10 +6,10 @@ Features:
 - Online/Offline user tracking
 - Message deletion
 Tech stack:
-Frontend:
-- Next.js
-- TypeScript
-- Tailwind CSS
-Backend:
-- Node.js
-- Express.js
+ Frontend:
+ - Next.js
+ - TypeScript
+ - Tailwind CSS
+ Backend:
+ - Node.js
+ - Express.js
