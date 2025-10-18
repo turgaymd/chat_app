@@ -1,4 +1,4 @@
-import {  useContext, useEffect, useState } from "react";
+import {  useContext,useState } from "react";
 import { ApiContext } from "../ApiContext";
 import axios from "axios";
 import { BsTrash,BsThreeDotsVertical } from "react-icons/bs";
@@ -7,12 +7,12 @@ import type { User } from "./Chats";
 import { AuthContext } from "../AuthContext";
   
 export type Message={
-  _id:number,
+  _id:string,
   message:string,
   image:string,
   audio:string,
-  sender:number,
-  receiver:number,
+  sender:string,
+  receiver:string,
   createdAt:string,
   isRead:boolean,
 }
@@ -21,8 +21,8 @@ type MessageProps={
  user:User | null,
  theme:string,
  messages:Message[],
- onlineUsers:User[]
- setMessages:React.Dispatch<React.SetStateAction<Message[]>>
+ onlineUsers:User[],
+ setMessages:React.Dispatch<React.SetStateAction<Message[]>>,
  setAllMessages:React.Dispatch<React.SetStateAction<Message[]>>
 }
 
@@ -30,24 +30,21 @@ const Messages = ({ user, theme,  messages, setMessages, setAllMessages}:Message
 
   const {apiUrl} = useContext(ApiContext)
   const {token}=useContext(AuthContext)
-  const [selectedMessage, setSelectedMessage] = useState<number>()
+  const [selectedMessage, setSelectedMessage] = useState<string>()
   const colors = theme ==='dark' ? 'text-white message-text' :'text-dark message-text'
 
-useEffect(()=>{
-setTimeout(()=>{
-},1500)
-  },[])
 
-  const handleDelete=async()=>{
+  const handleDelete=async(id:string)=>{
     try{
-      await axios.delete(`${apiUrl}/api/messages/message/${selectedMessage}`, {
+      await axios.delete(`${apiUrl}/api/messages/message/${id}`, {
        headers:{
          "Content-Type":"application/json",
          "Authorization":`Bearer ${token}`
        }
       })
-       setMessages((prevMessages)=>prevMessages.filter((message)=>message._id!==selectedMessage))
-       setAllMessages((prevMessages)=>prevMessages.filter((message)=>message._id!==selectedMessage))
+
+       setMessages((prevMessages)=>prevMessages.filter((message)=>message._id!==id))
+       setAllMessages((prevMessages)=>prevMessages.filter((message)=>message._id!==id))
      }
      catch(err){
        console.log(err)
@@ -67,7 +64,7 @@ setTimeout(()=>{
                 <li className="dropdown">
                   <button className={`${colors} `} role="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" aria-label="dropdown">< BsThreeDotsVertical  fontSize={20} /></button>
                   <ul className={theme==='dark' ? 'background-light text-mute dropdown-menu' : 'background-dark text-muted dropdown-menu'} aria-labelledby="dropdownMenuButton" >               
-                    <li className="dropdown-item"><a onClick={handleDelete} ><span><BsTrash fontSize={24}/></span>Delete</a></li>                 
+                    <li className="dropdown-item"><a onClick={()=>handleDelete(message._id)} ><span><BsTrash fontSize={24}/></span>Delete</a></li>                 
                   </ul>
                 </li>
               </ul>

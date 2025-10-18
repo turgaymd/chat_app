@@ -3,7 +3,6 @@ const User = require('../models/User')
 const generateToken = require('../utils/generateToken')
 const userRouter=express.Router()
 const asyncHandler=require('express-async-handler')
-const Message = require('../models/Messages')
 const protect=require('../middleware/authMiddleware')
 const multer = require('multer')
 const bcrypt=require('bcryptjs')
@@ -38,28 +37,6 @@ if(user && (await bcrypt.compare(password, user?.password || ""))){
                 throw new Error("Invalid user data")
             }
         }))
-
-               
-        userRouter.post('/messages/:id', protect, upload.single('image'), asyncHandler(async (req,res)=>{
-            try{
-                const {message, image,audio}=req.body   
-                const sender=req.user._id
-                const receiver=req.params.id
-                    const newMessage=new Message({
-                        message,
-                        receiver,
-                        sender,
-                        image,
-                        audio
-                    })
-                    await newMessage.save()
-                    res.status(201).json(newMessage)           
-            }
-            catch(err){
-                res.status(400).json({error:'Unable to send a message', details:err.message})
-                throw new Error('Unable to send a message')
-            }
-            }))
 
             // userRouter.put('/profile/:id', protect, upload.single('image'), asyncHandler (async (req,res)=>{
             //     try{      
@@ -107,7 +84,7 @@ if(userExist){
     return res.status(401).json({error:"User already exists"})
 }
 let passwordRegex= /^(?=.*[!@._#+$^&*]).{8,}$/
-let emailRegex=/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/
+let emailRegex=/^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9]+\.)+[a-zA-Z]{2,}$/
 
 if(!emailRegex.test(email)){
     return res.status(401).json({error:"Invalid Email format"})
@@ -140,52 +117,7 @@ else{
 
 
 
-userRouter.get('/messages/:id', protect, async (req,res)=>{
-    if (!req.user) {
-        return res.status(400).json({ message: 'User not authenticated' });
-    }
-    const messages=await Message.find({
-    $or:[
-        {sender:req.user._id,receiver:req.params.id},
-        {sender:req.params.id,receiver:req.user._id}
-    ] 
-    })
-    messages.status="✓✓"
-    res.json(messages)
-})
 
-userRouter.delete('/messages/:id', protect, async (req,res)=>{
-    if (!req.user) {
-        return res.status(400).json({ message: 'User not authenticated' });
-    }
-    const messages=await Message.deleteMany({
-    $or:[
-        {sender:req.user._id,receiver:req.params.id},
-        {sender:req.params.id,receiver:req.user._id}
-    ] 
-   
-    })
-    if(messages){
-         res.status(200).json({success:true, message:'jj'})
-    }
-    else{
-        res.json({message:"Messages are deleted"})
-    }
-
-})
-userRouter.delete('/messages/message/:id', protect, async (req,res)=>{
-    if (!req.user) {
-        return res.status(400).json({ message: 'User not authenticated' });
-    }
-    const message=await Message.deleteOne({_id:req.params.id})
-    if(message){
-         res.status(200).json({success:true, message:'message deleted'})
-    }
-    else{
-        res.json({message:"Messages are deleted"})
-    }
-
-})
 userRouter.delete('/users/:id', protect, async (req,res)=>{
           if(!req.user){
             return res.status(400).json({ message: 'User not authenticated' });
@@ -197,13 +129,10 @@ userRouter.delete('/users/:id', protect, async (req,res)=>{
 })
 
 userRouter.get('/',async (req,res)=>{
-    const users=await User.find({})
+    const users=await User.find({}).select("-password")
     res.json(users)
 })
 
-userRouter.get('/messages/', async (req,res)=>{
-    const messages=await Message.find({})
-    res.json(messages)
-})
+
 
 module.exports=userRouter;

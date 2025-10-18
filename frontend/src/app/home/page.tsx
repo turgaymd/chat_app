@@ -3,7 +3,7 @@ import { BsEmojiSmile, BsImage, BsSend } from "react-icons/bs";
 import { HiOutlineMicrophone } from "react-icons/hi2";
 import { useEffect, useRef } from "react";
 import { useContext } from "react";
-import { useState } from "react";
+import { useState,useCallback } from "react";
 import Sidebar from "../components/Sidebar";
 import { FaRegStopCircle, FaTrash } from "react-icons/fa";
 import { ThemeContext } from "../ThemeContext";
@@ -51,7 +51,6 @@ function Chat() {
     const handleSize = () => {
       if (showSidebar && window.innerWidth <= 768) {
         setShowChat(false);
-        console.log('tree')
       } else {
         setShowChat(true);
       }
@@ -69,15 +68,8 @@ function Chat() {
     }
   }, [user, showSidebar]);
 
-  useEffect(() => {
-    fetch(`${apiUrl}/api/`)
-      .then((res) => res.json())
-      .then((data) => {
-        setUsers(data);
-        setFilteredUsers(data);
-      });
-  }, [apiUrl]);
-  const fetchingAll = async () => {
+
+  const fetchingAll = useCallback(async () => {
     const response = await fetch(`${apiUrl}/api/messages/`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -85,7 +77,7 @@ function Chat() {
     });
     const data = await response.json();
     setAllMessages(data);
-  };
+  },[apiUrl, token,setAllMessages]);
   const fetching = async () => {
     const response = await fetch(`${apiUrl}/api/messages/${selectedUser?._id}`, {
       headers: {
@@ -95,9 +87,20 @@ function Chat() {
     const data = await response.json();
     setMessages(data);
   };
+    useEffect(() => {
+    fetch(`${apiUrl}/api/`)
+      .then((res) => res.json())
+      .then((data) => {
+        setUsers(data);
+        setFilteredUsers(data);
+      });
+  }, [apiUrl, fetchingAll]);
+
   useEffect(() => {
-    fetchingAll();
-    if (!selectedUser) return;
+    if (!selectedUser) {
+      setMessages([]);
+      return;
+    }
     fetching()
     socket.on("message", (data) => {
       setMessageCount((prevCount)=>(prevCount+1))
@@ -121,13 +124,13 @@ function Chat() {
       })
 
    
-   const interval= setInterval(()=>{
-      fetching()     
-    },5000)
+  //  const interval= setInterval(()=>{
+  //     fetching()     
+  //   },5000)
     return () => {
       socket.off("message");
       socket.off('typing')
-      clearInterval(interval)
+      // clearInterval(interval)
     };
 
   
@@ -135,6 +138,9 @@ function Chat() {
 
   const handleCancel=()=>{
     setRecording(false)
+    if(record){
+      URL.revokeObjectURL(record)
+    }
     setRecord('')
   }
   const handleAttach = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -224,7 +230,6 @@ function Chat() {
         setMessages((prevMessage) => [...prevMessage, data]);
         setAllMessages((prevMessage) => [...prevMessage, data]);
         socket.emit("message", formData);
-        fetching();
       } catch (err) {
         console.log(err);
       }
@@ -265,8 +270,6 @@ function Chat() {
                 selectedUser={selectedUser}
                 setSelectedUser={setSelectedUser}
                 setShowSidebar={setShowSidebar}
-                blocked={blocked}
-                setBlocked={setBlocked}
                 users={users}
                 messageCount={messageCount}
                 filteredUsers={filteredUsers}
@@ -290,7 +293,9 @@ function Chat() {
                       selectedUser={selectedUser}
                       setMessages={setMessages}
                       onlineUsers={onlineUsers}
+                      setAllMessages={setAllMessages}
                       typing={typing}
+                      fetchingAll={fetchingAll}
                       setShowSidebar={setShowSidebar}
                       setShowChat={setShowChat}
                    

@@ -16,17 +16,19 @@ type Props={
   selectedUser:User,
   onlineUsers:User[],
   setMessages:React.Dispatch<React.SetStateAction<Message[]>>,
+  setAllMessages:React.Dispatch<React.SetStateAction<Message[]>>,
+  fetchingAll:()=>void,
   setShowSidebar:(showSidebar:boolean)=>void,
   setShowChat:(showChat:boolean)=>void,
   muted:boolean,
   setMuted:(muted:boolean)=>void,
 }
 
-const Header=({theme,selectedUser, onlineUsers, setMessages, setShowSidebar, setShowChat, muted, setMuted, typing}:Props)=>{
+const Header=({theme,selectedUser, onlineUsers, fetchingAll, setMessages,setAllMessages, setShowSidebar, setShowChat, muted, setMuted, typing}:Props)=>{
   
 const {apiUrl, }=useContext(ApiContext)
 const {token,user}=useContext(AuthContext)
-const onlineUser=selectedUser?._id ? onlineUsers.find((user)=>user.username===selectedUser.username) : null
+const onlineUser=selectedUser?._id ? onlineUsers.find((user)=>user._id===selectedUser._id) : null
 
 const handleMute=()=>{
   setMuted(!muted)
@@ -41,7 +43,14 @@ const handleDelete=async()=>{
      }
     })
    setMessages([])
-   }
+   setAllMessages((prevMessages)=>prevMessages.filter((message)=>
+   !(
+   (message.sender===user?._id && message.receiver===selectedUser._id) ||
+    (message.sender===selectedUser._id && message.receiver===user?._id)
+   )
+  ))
+    fetchingAll() 
+  }
    catch(err){
      console.log(err)
 }

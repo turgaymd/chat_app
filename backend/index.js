@@ -9,6 +9,7 @@ const http=require("http")
 const server=http.createServer(app)
 const multer=require("multer");
 const path = require('path');
+const MessageRouter = require('./routes/MessageRoute');
 
 
 dotenv.config()
@@ -24,6 +25,7 @@ app.use(cors({
     origin:['http://localhost:3000', 'https://chat-app-bxnf.vercel.app']
     }));
 app.use('/api',userRouter)
+app.use('/api',MessageRouter)
 app.use('/uploads',express.static(path.join(__dirname,'/uploads')))
 
 const PORT=process.env.PORT || 1000;

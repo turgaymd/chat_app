@@ -25,6 +25,11 @@ const chatSchema=mongoose.Schema(
         required:true,
         ref:'User'
      },
+     status:{
+      type:String,
+      enum:['sent', 'delivered', 'seen'],
+      default:"sent",
+   }
     },
      {
         timestamps:true

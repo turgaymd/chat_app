@@ -15,16 +15,15 @@ type Props={
   selectedUser:User | null,
   handleSearch:(e:React.FormEvent)=>void
   setSelectedUser:(selected:User)=>void
-  blocked:boolean,
-  setBlocked:(blocked:boolean)=>void,
   filteredUsers:User[],
   setFilteredUsers:React.Dispatch<React.SetStateAction<User[]>>,
   setSearch:React.Dispatch<React.SetStateAction<string>>,
  
 }
 
-const Contacts=({handleSearch, filteredUsers, blocked, setBlocked, selectedUser,setSelectedUser, setSearch, setFilteredUsers}:Props)=>{
+const Contacts=({handleSearch, filteredUsers, selectedUser,setSelectedUser, setSearch, setFilteredUsers}:Props)=>{
     const {apiUrl}=useContext(ApiContext)
+    const [blocked,setBlocked]=React.useState<boolean>(false)
     const {token,user}=useContext(AuthContext)
     const {theme}=useContext(ThemeContext)
 
