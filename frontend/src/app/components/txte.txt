@@ -1,0 +1,19 @@
+// const handleSearch=(e:React.FormEvent)=>{
+//   e.preventDefault()
+// if(search===''){
+// setFilteredUsers(chatUsers)
+// return;
+// }
+// const filterUsers = chatUsers.filter((item:User)=>item?.username?.toLowerCase().includes(search.toLowerCase()))
+// setFilteredUsers(filterUsers)
+// }
+
+
+// const handleUser=()=>{
+// if(window.innerWidth<=768){
+// setShowSidebar(false)
+// setShowChat(true)
+// const chat=document.getElementById('nav-tabContent')
+// if(chat){
+//     chat.classList.remove('col-12')
+// }}}

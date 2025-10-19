@@ -13,7 +13,6 @@ import { AuthContext } from "../AuthContext";
 
 type Props={
   selectedUser:User | null,
-  handleSearch:(e:React.FormEvent)=>void
   setSelectedUser:(selected:User)=>void
   filteredUsers:User[],
   setFilteredUsers:React.Dispatch<React.SetStateAction<User[]>>,
@@ -21,7 +20,7 @@ type Props={
  
 }
 
-const Contacts=({handleSearch, filteredUsers, selectedUser,setSelectedUser, setSearch, setFilteredUsers}:Props)=>{
+const Contacts=({filteredUsers, selectedUser,setSelectedUser, setSearch, setFilteredUsers}:Props)=>{
     const {apiUrl}=useContext(ApiContext)
     const [blocked,setBlocked]=React.useState<boolean>(false)
     const {token,user}=useContext(AuthContext)
@@ -82,7 +81,7 @@ const Contacts=({handleSearch, filteredUsers, selectedUser,setSelectedUser, setS
                   <h4>Contacts</h4>
                 </div>  
               </div>
-              <form className="search-form d-flex align-items-center" onSubmit={handleSearch}>
+              <form className="search-form d-flex align-items-center" >
                 <input type="text" className={`${theme==='dark' ? 'background-light' : 'background-dark'} w-full  px-4 py-2`} placeholder="Search here..." onChange={(e)=>setSearch(e.target.value)}/>        
                 <a type="submit" className="text-muted"> <BiSearch fontSize={24}/></a>
               </form>

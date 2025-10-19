@@ -88,6 +88,7 @@ function Chat() {
     setMessages(data);
   };
     useEffect(() => {
+      fetchingAll()
     fetch(`${apiUrl}/api/`)
       .then((res) => res.json())
       .then((data) => {
@@ -236,6 +237,7 @@ function Chat() {
       setItem("");
       setImage("");
       setRecord("");
+      setBlocked(false)
       setAttach(undefined);
     } else {
       Swal.fire({

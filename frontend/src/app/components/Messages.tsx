@@ -1,4 +1,4 @@
-import {  useContext,useState } from "react";
+import {  useContext} from "react";
 import { ApiContext } from "../ApiContext";
 import axios from "axios";
 import { BsTrash,BsThreeDotsVertical } from "react-icons/bs";
@@ -30,7 +30,6 @@ const Messages = ({ user, theme,  messages, setMessages, setAllMessages}:Message
 
   const {apiUrl} = useContext(ApiContext)
   const {token}=useContext(AuthContext)
-  const [selectedMessage, setSelectedMessage] = useState<string>()
   const colors = theme ==='dark' ? 'text-white message-text' :'text-dark message-text'
 
 
@@ -42,7 +41,6 @@ const Messages = ({ user, theme,  messages, setMessages, setAllMessages}:Message
          "Authorization":`Bearer ${token}`
        }
       })
-
        setMessages((prevMessages)=>prevMessages.filter((message)=>message._id!==id))
        setAllMessages((prevMessages)=>prevMessages.filter((message)=>message._id!==id))
      }
@@ -59,10 +57,10 @@ const Messages = ({ user, theme,  messages, setMessages, setAllMessages}:Message
     .map((message:Message) => {
        
   return (
-            <div key={message._id}  className={`message ${message.sender===user?._id  ? "justify-content-end" : "justify-content-start"}`} onClick={()=>setSelectedMessage(message._id)}>                 
-              <ul>         
+            <div key={message._id}  className={`message ${message.sender===user?._id  ? "justify-content-end" : "justify-content-start"}`}>                 
+              <ul >         
                 <li className="dropdown">
-                  <button className={`${colors} `} role="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" aria-label="dropdown">< BsThreeDotsVertical  fontSize={20} /></button>
+                  <button className={`${colors} `} role="button" id={`dropdownMenuButton-${message._id}`} data-bs-toggle="dropdown" aria-expanded="false" aria-label="dropdown">< BsThreeDotsVertical  fontSize={20} /></button>
                   <ul className={theme==='dark' ? 'background-light text-mute dropdown-menu' : 'background-dark text-muted dropdown-menu'} aria-labelledby="dropdownMenuButton" >               
                     <li className="dropdown-item"><a onClick={()=>handleDelete(message._id)} ><span><BsTrash fontSize={24}/></span>Delete</a></li>                 
                   </ul>

@@ -1,6 +1,6 @@
 
 import { BiSearch } from "react-icons/bi";
-import { useState, useContext,useMemo} from "react";
+import { useState, useContext} from "react";
 import { ThemeContext } from "../ThemeContext";
 import Settings from "./Settings";
 import Contacts from "./Contacts"
@@ -28,44 +28,21 @@ type Props={
     setShowChat:(showChat:boolean)=>void
 }
 
-
-const Chats=({allMessages, selectedUser,setSelectedUser, messageCount, setShowSidebar, filteredUsers,setFilteredUsers, users, setShowChat}:Props)=>{
+export type chatUser=User & {lastMessage?:Message}
+const Chats=({allMessages, selectedUser,setSelectedUser, messageCount,  filteredUsers,setFilteredUsers, users}:Props)=>{
 const {theme}=useContext(ThemeContext)
 const {user}=useContext(AuthContext)
 const [search, setSearch]=useState('')
 const {apiUrl}=useContext(ApiContext)
 
-const chatUsers=useMemo(()=>{ 
-  if(!user?._id) return []
-  return users.filter((u:User)=>
-  allMessages.some(
+const chatUsers= allMessages.length>0 ? users.filter((u:chatUser)=> allMessages.some(
     (message:Message)=>
       (message.sender===user?._id && message.receiver===u._id) ||
-      (message.sender===u?._id && message.receiver===user?._id))
-);
-},[users,allMessages,user]);
+      (message.sender===u?._id && message.receiver===user?._id)) 
 
+) : users
 
-const handleSearch=(e:React.FormEvent)=>{
-  e.preventDefault()
-if(search===''){
-setFilteredUsers(chatUsers)
-return;
-}
-const filterUsers = chatUsers.filter((item:User)=>item?.username?.toLowerCase().includes(search.toLowerCase()))
-setFilteredUsers(filterUsers)
-}
-
-
-const handleUser=()=>{
-if(window.innerWidth<=768){
-setShowSidebar(false)
-setShowChat(true)
-const chat=document.getElementById('nav-tabContent')
-if(chat){
-    chat.classList.remove('col-12')
-}}}
-
+ const filterUsers = search.trim() ? chatUsers.filter((item)=>item?.username?.toLocaleLowerCase().includes(search.toLocaleLowerCase())) : chatUsers
     return(
         <>
           <div className={`${theme==='dark' ? 'darkBg': 'ligthBg'} col-md-3 col-12 chats tab-content`} id="nav-tabContent" >
@@ -74,47 +51,40 @@ if(chat){
                 <div className="mb-4">
                   <h4>Chats</h4>
                 </div>          
-                <form className="search-form d-flex align-items-center" onSubmit={handleSearch}>
+                <form className="search-form d-flex align-items-center">
                   <input type="text" className={`${theme==='dark' ? 'background-light' : 'background-dark'} w-full  px-4 py-2`} placeholder="Search here..." onChange={(e)=>setSearch(e.target.value)}/>        
                   <a type="submit" className=" text-muted"> <BiSearch fontSize={24}/></a>
                 </form>
               </div>     
              <div className="sidebar-body">
                <div className="users"> 
-
                 {
-                filteredUsers.map((item)=>{
-                const userMessages=allMessages.some((message:Message)=> 
-                  (message.sender===item._id  &&   message.receiver===user?._id ) || 
-                  (message.sender===user?._id  && message.receiver===item._id ))       
-                const lastMessage=userMessages && userMessages.slice(-1)[0]
-
-                const lastMsg=lastMessage?.image ? 'Image' : lastMessage?.audio ? 'Audio' : lastMessage?.message                               
+                filterUsers.map((item)=>{                            
                 return (        
                 <div className={theme==='dark' ? 'user-profile border-secondary bs-light' : 'user-profile border-red bs-dark'} 
-                onClick={()=> {setSelectedUser(item); handleUser() }}
+                onClick={()=> setSelectedUser(item)}
                 
-            key={item._id}>
+            key={item?._id}>
                   <div className="user position-relative">
-                  {item.username!==user?.username && ( 
+                  {item?.username!==user?.username && ( 
                     <>
                     <div className="d-flex align-items-center justify-content-between">                 
                       <div className="notifies d-flex pl-3 justify-content-between">                                     
                         <a className="position-relative">
-                          <img src={`${apiUrl}/${item.image}`}  className="avatar"  alt="user" width={100} height={100}/>
+                          <img src={`${apiUrl}/${item?.image}`}  className="avatar"  alt="user" width={100} height={100}/>
                         </a>              
                        <div className="d-flex flex-column justify-center">                     
-                        <h5 className="text-truncate">{item.username}</h5>  
-                       <div className='overflow-hidden text-ellipsis last-message'>
-                        {lastMsg || ''}
+                        <h5 className="text-truncate">{item?.username}</h5>  
+                       {/* <div className='overflow-hidden text-ellipsis last-message'>
+                        {item?.lastMessage?.sender}
                       
-                      </div>
+                      </div> */}
                     </div>      
                   </div>             
                     <div>
-                      {
-                       lastMessage ?  <h5 className="sented">{new Date(lastMessage.createdAt).toLocaleTimeString('en-US', { hour:"numeric",minute:"numeric"})}</h5> : ''
-                      }
+                      {/* {
+                       item?.lastMessage ?  <h5 className="sented">{new Date(item?.lastMessage.createdAt).toLocaleTimeString('en-US', { hour:"numeric",minute:"numeric"})}</h5> : ''
+                      } */}
                      <div>
                       {messageCount>0  ? <span className="message-count d-none">{messageCount}</span> : ''}
                 </div>
@@ -131,7 +101,7 @@ if(chat){
    </div>
    </div>
    </div>
-<Contacts filteredUsers={filteredUsers} setFilteredUsers={setFilteredUsers} handleSearch={handleSearch} selectedUser={selectedUser} setSelectedUser={setSelectedUser} setSearch={setSearch}/>
+<Contacts filteredUsers={filteredUsers} setFilteredUsers={setFilteredUsers}  selectedUser={selectedUser} setSelectedUser={setSelectedUser} setSearch={setSearch}/>
 <Settings setFilteredUsers={setFilteredUsers}/>
         </div>
         </>
