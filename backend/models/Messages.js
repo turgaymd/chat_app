@@ -8,7 +8,7 @@ const chatSchema=mongoose.Schema(
      },
     image: {
    type:String,
-   required:false,
+   default:null,
 
        },
        audio:{

@@ -14,7 +14,8 @@ type Props={
 const Settings=({setFilteredUsers}:Props)=>{
   const {apiUrl}=useContext(ApiContext)
   const {theme}=useContext(ThemeContext)
-  const {user, token}=useContext(AuthContext)
+  const {user,setUser, token}=useContext(AuthContext)
+  const isDark=theme==="dark";
   // const [newPassword, setNewPassword]=useState('')
   const [edit,setEdit]=useState(true)
   // const [about,setAbout]=useState(user?.about || 'change your thoughts and you change your world')
@@ -31,7 +32,6 @@ if(user){
 },[user])
 
     const handleImage = async(e:React.ChangeEvent<HTMLInputElement>)=>{
-      e.preventDefault()
     const file = e.target.files?.[0]
     if(!file) return;
     const formData=new FormData()
@@ -46,6 +46,7 @@ if(user){
     })
      const newImage=result.data.user.image
      setImage(newImage)
+     setUser((prevUser)=>(prevUser ? {...prevUser, image:newImage}: null))
      window.localStorage.setItem('userInfo',JSON.stringify({...user, image:newImage}))
      setFilteredUsers((prevUsers)=>prevUsers.map((item)=>
      item._id===userId ? {...item, image:newImage} : item))
@@ -100,13 +101,13 @@ if(user){
         <div>
           <form onSubmit={handleProfile} id="prof">
              <>
-              <div className={theme==='dark' ? 'user-profile border-secondary' : 'user-profile border-red'}>         
+              <div className={isDark ? 'user-profile border-secondary' : 'user-profile border-red'}>         
                 <div className="profile-img d-flex justify-content-center">
                   <div className="position-relative">     
-                    <img src={`${apiUrl}/${image}`} className={`${theme==="dark" ? 'border-lighted' :'border-grey'} rounded-circle avatar`} alt="user" width={100} height={100} loading="lazy" /> 
+                    <img src={`${apiUrl}/${image}`} className={`rounded-circle avatar ${isDark ? 'border-lighted' :'border-grey'}`} alt="user" width={100} height={100} loading="lazy" /> 
                       <label htmlFor="image">
-                      <input type="file"  name="image" id="image" onChange={handleImage}/>
-                      <a className={theme==='dark' ? 'btn btn_light' : "btn btn_dark"}><CiEdit /></a>
+                      <input type="file"  name="image" id="image" accept="image/*"  onChange={handleImage}/>
+                      <a className={isDark ? 'btn btn_light' : "btn btn_dark"}><CiEdit /></a>
                       {}
                       </label>
                   </div>
@@ -115,7 +116,7 @@ if(user){
               <div className='user-content'>
                 <div>
                 <label className={theme==='light' ? 'text-muted' : 'text-mute'} htmlFor="username">Name</label> 
-                  <input className={`${theme==='dark' ? 'background-light' : 'background-dark'} w-full  px-4 py-2 mt-2`}  ref={userRef}  value={username}    onChange={(e)=>setUsername(e.target.value)}  id="username" onKeyUp={()=>handleEdit()}/>         
+                  <input className={`${isDark ? 'background-light' : 'background-dark'} w-full  px-4 py-2 mt-2`}  ref={userRef}  value={username}    onChange={(e)=>setUsername(e.target.value)}  id="username" onKeyUp={()=>handleEdit()}/>         
                 </div>
                 {
                   edit ? 

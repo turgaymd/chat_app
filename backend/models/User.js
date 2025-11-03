@@ -28,7 +28,6 @@ const userSchema=mongose.Schema(
         image:{
             type:String,
             default:'uploads/user-profile.png',
-            required:false,
         },
         role:{
         type:String,

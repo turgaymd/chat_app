@@ -1,10 +1,10 @@
 "use client"
-import { createContext, ReactNode, useState,useEffect } from "react";
+import React, { createContext, ReactNode, useState,useEffect } from "react";
 import type { User } from "./components/Chats";
 type AuthContextType={
     user:User | null,
     token:string,
-    setUser:(user:User | null)=>void
+    setUser:React.Dispatch<React.SetStateAction<User | null>>;
     setToken:(token:string)=>void
 }
 export const AuthContext=createContext<AuthContextType>({
@@ -26,10 +26,10 @@ useEffect(()=>{
     const userrInfo= window.localStorage.getItem('userInfo')
     if(userrInfo){
         const userInfo=JSON.parse(userrInfo)
-        if(userInfo?.data){
-            setUser(userInfo.data)
-            setToken(userInfo.data.token || '')
-        }
+         const userData=userInfo.data || userInfo
+            setUser(userData)
+            setToken(userData.token || '')
+        
  
     }
   
