@@ -50,7 +50,7 @@ if(user){
      window.localStorage.setItem('userInfo',JSON.stringify({...user, image:newImage}))
      setFilteredUsers((prevUsers)=>prevUsers.map((item)=>
      item._id===userId ? {...item, image:newImage} : item))
-     setEdit(false)
+     setEdit(true)
     }
     
     catch(err){
@@ -100,7 +100,6 @@ if(user){
           </div>
         <div>
           <form onSubmit={handleProfile} id="prof">
-             <>
               <div className={isDark ? 'user-profile border-secondary' : 'user-profile border-red'}>         
                 <div className="profile-img d-flex justify-content-center">
                   <div className="position-relative">     
@@ -116,7 +115,7 @@ if(user){
               <div className='user-content'>
                 <div>
                 <label className={theme==='light' ? 'text-muted' : 'text-mute'} htmlFor="username">Name</label> 
-                  <input className={`${isDark ? 'background-light' : 'background-dark'} w-full  px-4 py-2 mt-2`}  ref={userRef}  value={username}    onChange={(e)=>setUsername(e.target.value)}  id="username" onKeyUp={()=>handleEdit()}/>         
+                  <input className={`${isDark ? 'background-light' : 'background-dark'} w-full  px-4 py-2 mt-2`}  ref={userRef}  value={username}    onChange={(e)=>setUsername(e.target.value)}  id="username" onFocus={()=>handleEdit()}/>         
                 </div>
                 {
                   edit ? 
@@ -128,11 +127,9 @@ if(user){
                    </div>  
                 }
               </div>
-           </> 
           </form>
         </div> 
       </div>
- 
         </>
     )
 }
