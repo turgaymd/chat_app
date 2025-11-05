@@ -87,10 +87,10 @@ const handleBack=()=>{
                   <button className={theme==='dark' ? 'text-white' :'text-dark'}  role="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" title="dropdown" aria-label="dropdown">< BsThreeDotsVertical  fontSize={24} /></button>
                   <ul className={`${theme==='dark' ? 'background-light text-white' : 'background-dark text-muted'} dropdown-menu`} aria-labelledby="dropdownMenuButton" >
                     <li className="dropdown-item"  onClick={handleMute}>
-                      { muted=== false ? <a className=" d-flex gap-3"   >
-                      Mute <span><GoMute fontSize={28}/></span> </a> : <a className="d-flex gap-3" >Unmute <span><GoUnmute fontSize={24}/></span> </a> }
+                      { muted=== false ? <button className=" d-flex gap-3"   >
+                      Mute <span><GoMute fontSize={28}/></span> </button> : <button className="d-flex gap-3" >Unmute <span><GoUnmute fontSize={24}/></span> </button> }
                     </li>
-                    <li className="dropdown-item"><a onClick={handleDelete}>Delete chat <span><BsTrash fontSize={24}/></span></a></li>
+                    <li className="dropdown-item"><button onClick={handleDelete}>Delete chat <span><BsTrash fontSize={24}/></span></button></li>
                   </ul>
                 </li>
               </ul>

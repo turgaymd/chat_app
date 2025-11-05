@@ -4,7 +4,6 @@ import { ThemeContext } from "../ThemeContext"
 import { CiEdit } from "react-icons/ci";
 import axios from "axios";
 import type { User } from "./Chats";
-// import Image from "next/image";
 import { AuthContext } from "../AuthContext";
 
 type Props={

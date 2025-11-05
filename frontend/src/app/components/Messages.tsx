@@ -62,7 +62,7 @@ const Messages = ({ user, theme,  messages, setMessages, setAllMessages}:Message
                 <li className="dropdown">
                   <button className={`${colors} `} role="button" id={`dropdownMenuButton-${message._id}`} data-bs-toggle="dropdown" aria-expanded="false" aria-label="dropdown">< BsThreeDotsVertical  fontSize={20} /></button>
                   <ul className={theme==='dark' ? 'background-light text-mute dropdown-menu' : 'background-dark text-muted dropdown-menu'} aria-labelledby="dropdownMenuButton" >               
-                    <li className="dropdown-item"><a onClick={()=>handleDelete(message._id)} ><span><BsTrash fontSize={24}/></span>Delete</a></li>                 
+                    <li className="dropdown-item"><button onClick={()=>handleDelete(message._id)} ><span><BsTrash fontSize={24}/></span>Delete</button></li>                 
                   </ul>
                 </li>
               </ul>

@@ -23,7 +23,7 @@ MessageRouter.get('/messages/:id', protect, async (req,res)=>{
         {sender:req.user._id,receiver:req.params.id},
         {sender:req.params.id,receiver:req.user._id}
     ] 
-    })
+    }).sort({createdAt:1})
     messages.status="seen"
     res.json(messages)
 })

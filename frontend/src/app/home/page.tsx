@@ -48,6 +48,7 @@ function Chat() {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
+
     const handleSize = () => {
       if (showSidebar && window.innerWidth <= 768) {
         setShowChat(false);
@@ -66,6 +67,7 @@ function Chat() {
     return ()=>{
       window.removeEventListener('resize', handleSize)
     }
+  
   }, [user, showSidebar]);
 
 
@@ -161,6 +163,9 @@ function Chat() {
   const handleAudio = async () => {
     setItem('');
     setRecording(true);
+          if(record){
+      URL.revokeObjectURL(record)
+    }
     try {
       setTimer(0);
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -176,7 +181,7 @@ function Chat() {
       }, 1000);
 
       mediaRecorder.current.onstop = () => {
-        const blob = new Blob(chunks.current, { type: "audio/mp3" });
+        const blob = new Blob(chunks.current, { type: "audio/webm" });
         const audioURL = URL.createObjectURL(blob);
         setRecord(audioURL);
         chunks.current = [];
@@ -265,7 +270,7 @@ function Chat() {
     <>
       <div>
         <div className="chat-row d-flex">
-          {showSidebar ? (
+          {showSidebar && (
             <>
               <Sidebar />
               <Chats
@@ -277,13 +282,10 @@ function Chat() {
                 filteredUsers={filteredUsers}
                 setFilteredUsers={setFilteredUsers}
                 allMessages={allMessages}
-                setShowChat={setShowChat}
-              />
-            </>
-          ) : (
-            <></>
+                setShowChat={setShowChat}/>
+         </>
           )}
-          {showChat === true ? (
+          {showChat && (
             <>
               <div className={ `${theme === "dark" ? "chatDark" : "chatLight"} chat-body`} id="chatbody">
                 {selectedUser ? (
@@ -355,16 +357,8 @@ function Chat() {
                           </div>
                           <div className={`${theme === "dark" ? "background-light text-mute": "background-dark text-muted"} d-flex col-md-9 align-items-center gap-2 py-2 px-4 rounded-lg`}>
                               <>
-                              {attach  ? (
-                              <p className="attached">Image</p>
-                            ) : (
-                             <></>
-                            )}  
-                              {record ? (
-                              <p className="attached"> Audio</p>
-                            ) : (
-                             <></>
-                            )} 
+                              {attach  && (<p className="attached">Image</p>)}  
+                              {record && (<p className="attached"> Audio</p>)} 
                               <input type="text" value={item} className="w-full py-2 rounded-lg " placeholder="Write a message..." id="msg" onChange={(e) => setItem(e.target.value)} onKeyDown={handleTyping}/>                        
                               <button type="button" className="position-relative" aria-label="audio">
                               <HiOutlineMicrophone onClick={handleAudio} className="text-3xl" id="record"/>
@@ -384,9 +378,6 @@ function Chat() {
                     </div>                
                 </>}
               </div>
-            </>
-          ) : (
-            <>
             </>
           )}
         </div>

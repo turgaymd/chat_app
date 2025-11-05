@@ -144,7 +144,7 @@ select {
 .dropdown-item {
   color: inherit !important ;
 }
-.dropdown-item a {
+.dropdown-item button {
   display: flex;
   gap: 1rem;
 }

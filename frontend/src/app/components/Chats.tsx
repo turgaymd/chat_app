@@ -67,7 +67,6 @@ const chatUsers= allMessages.length>0 ? users.filter((u:chatUser)=> allMessages.
             key={item?._id}>
                   <div className="user position-relative">
                   {item?.username!==user?.username && ( 
-                    <>
                     <div className="d-flex align-items-center justify-content-between">                 
                       <div className="notifies d-flex pl-3 justify-content-between">                                     
                         <a className="position-relative">
@@ -91,7 +90,6 @@ const chatUsers= allMessages.length>0 ? users.filter((u:chatUser)=> allMessages.
               </div>
        
           </div>
-           </>
                   )
                 }
         </div>

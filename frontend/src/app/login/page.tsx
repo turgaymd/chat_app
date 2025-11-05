@@ -43,7 +43,7 @@ const Login = () => {
       setToken(response.data.token);
       toast.success("Successfully logged");
       socket.emit('join',username)
-      socket.emit('online', console.log(`${username} online`))
+      socket.emit('online',username)
       setTimeout(() => {
         setLogged(true);
       }, 1000);
@@ -83,7 +83,7 @@ const Login = () => {
                         <i className="btn position-absolute  ">
                           <CiLock fontSize={20} />
                         </i>
-                        <input type={hide ? "password" : "text"} placeholder="Enter Password" className="px-3 py-1.5 rounded-lg w-full"  name="password" onChange={(e) => setPassword(e.target.value)} minLength={8}/>
+                        <input type={hide ? "password" : "text"} autoComplete="username" placeholder="Enter Password" className="px-3 py-1.5 rounded-lg w-full"  name="password" onChange={(e) => setPassword(e.target.value)} minLength={8}/>
                         {hide ? (
                           <i className="btn hide" onClick={() => setHide(false)}>
                             <FaEyeSlash />

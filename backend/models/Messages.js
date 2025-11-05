@@ -1,19 +1,15 @@
-const { default: mongoose } = require("mongoose");
-mongoose.set('strictQuery', false)
+const mongoose = require("mongoose");
 const chatSchema=mongoose.Schema(
     {
      message:{
         type:String,
-        required:false,
      },
     image: {
-   type:String,
-   default:null,
-
+    type:String,
+    default:null,
        },
        audio:{
          type:String,
-         required:false,
        },
      sender:{
       type:mongoose.Schema.Types.ObjectId,
@@ -36,8 +32,6 @@ const chatSchema=mongoose.Schema(
      }
 )
 chatSchema.index({sender:1, receiver:1})
-chatSchema.pre("save", async function(next){
-   next()
-})
+
 const Message=mongoose.model("Message",chatSchema)
 module.exports=Message;

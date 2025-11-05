@@ -66,7 +66,10 @@ const Contacts=({filteredUsers, selectedUser,setSelectedUser, setSearch, setFilt
           }
         })
         setFilteredUsers(prevUsers=>(prevUsers.filter((user)=>user._id!==selectedUser?._id)))
-        Swal.fire('User deleted successfully')
+        Swal.fire({
+          title:"User deleted",
+          icon:"success"
+        })
       }
       catch(err){
         console.error(err)
@@ -106,8 +109,8 @@ const Contacts=({filteredUsers, selectedUser,setSelectedUser, setSearch, setFilt
                         <button className={theme==='dark' ? 'text-white' :'text-dark'} role="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" aria-label="dropdown">< BsThreeDotsVertical  fontSize={24} /></button>
                         <ul className={`${theme==='dark' ? 'background-light text-white' : 'background-dark text-muted'} dropdown-menu`} aria-labelledby="dropdownMenuButton" >
                           <li className="dropdown-item" >
-                                  { blocked===true ? <a className="d-flex justify-content-between"  onClick={handleUnblock}>Unblock user <span><CgUnblock /></span></a>
-                                    :     <a className="d-flex justify-content-between" onClick={handleBlock}>Block user <span><BiBlock  /></span></a> }
+                                  { blocked===true ? <button className="d-flex justify-content-between"  onClick={handleUnblock}>Unblock user <span><CgUnblock /></span></button>
+                                    :     <button className="d-flex justify-content-between" onClick={handleBlock}>Block user <span><BiBlock  /></span></button> }
                           </li>
                           <li className="dropdown-item"><a className="d-flex justify-content-between">Delete user <span><BsTrash  onClick={deleteUser}/></span></a></li>       
                         </ul>

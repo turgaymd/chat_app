@@ -32,12 +32,10 @@ const userSchema=mongose.Schema(
         role:{
         type:String,
         default:'Basic',
-        required:true,
         } ,
         status:{
         type:String,
         default:'Available',
-        required:true
         },   
         isBlocked:{
             type:Boolean,
