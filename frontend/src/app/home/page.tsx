@@ -18,6 +18,7 @@ import emojii from "../emojis";
 import type { Message } from "../components/Messages";
 import type { User } from "../components/Chats";
 import { AuthContext } from "../AuthContext";
+import { useAudioRecorder } from "../components/MediaRecorder";
 
 
 function Chat() {
@@ -28,13 +29,10 @@ function Chat() {
   const [onlineUsers, setOnlineUsers] = useState<User[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [item, setItem] = useState("");
-  const [record, setRecord] = useState<string>("") || null;
   const [muted, setMuted] = useState<boolean>(true);
-  const [recording, setRecording] = useState<boolean>(false);
   const [blocked, setBlocked] = useState<boolean>(false);
   const [showSidebar, setShowSidebar] = useState<boolean>(true);
   const [showChat, setShowChat] = useState<boolean>(true);
-  const [timer, setTimer] = useState<number>(0);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [users, setUsers] = useState([]);
   const [allMessages, setAllMessages] = useState<Message[]>([]);
@@ -42,13 +40,11 @@ function Chat() {
   const { apiUrl } = useContext(ApiContext);
   const { user, token } = useContext(AuthContext);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const mediaRecorder = useRef<MediaRecorder>(null);
-  const mediaStream = useRef<MediaStream>(null);
-  const chunks = useRef<Blob[]>([]);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  useEffect(() => {
+const {record,setRecord, recording, timer, handleAudio, handleStop, handleCancel} =useAudioRecorder()
 
+  useEffect(() => {
     const handleSize = () => {
       if (showSidebar && window.innerWidth <= 768) {
         setShowChat(false);
@@ -139,13 +135,7 @@ function Chat() {
   
   }, [selectedUser, token, apiUrl]);
 
-  const handleCancel=()=>{
-    setRecording(false)
-    if(record){
-      URL.revokeObjectURL(record)
-    }
-    setRecord('')
-  }
+ 
   const handleAttach = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formData = new FormData();
     const file = e.target.files?.[0];
@@ -160,46 +150,7 @@ function Chat() {
     }
   };
 
-  const handleAudio = async () => {
-    setItem('');
-    setRecording(true);
-          if(record){
-      URL.revokeObjectURL(record)
-    }
-    try {
-      setTimer(0);
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaStream.current = stream;
-      mediaRecorder.current = new MediaRecorder(stream);
-      mediaRecorder.current.ondataavailable = (e) => {
-        if (e.data.size > 0) {
-          chunks.current.push(e.data);
-        }
-      };
-      const timers = setInterval(() => {
-        setTimer((prev) => prev + 1);
-      }, 1000);
-
-      mediaRecorder.current.onstop = () => {
-        const blob = new Blob(chunks.current, { type: "audio/webm" });
-        const audioURL = URL.createObjectURL(blob);
-        setRecord(audioURL);
-        chunks.current = [];
-        clearInterval(timers);
-      };
-      mediaRecorder.current.start();
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const handleStop = () => {
-    setRecording(false);
-    if (mediaRecorder.current) {
-      mediaRecorder.current.stop();
-      mediaStream.current?.getTracks().forEach((track) => track.stop());
-    }
-  };
-
+  
   const handleEmojis = (e: React.MouseEvent<HTMLButtonElement>) => {
     const emoji = e.target as HTMLButtonElement;
     setItem((prev)=>prev+emoji.value);
