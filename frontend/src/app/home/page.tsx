@@ -3,7 +3,7 @@ import { BsEmojiSmile, BsImage, BsSend } from "react-icons/bs";
 import { HiOutlineMicrophone } from "react-icons/hi2";
 import { useEffect, useRef } from "react";
 import { useContext } from "react";
-import { useState,useCallback } from "react";
+import { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { FaRegStopCircle, FaTrash } from "react-icons/fa";
 import { ThemeContext } from "../ThemeContext";
@@ -19,9 +19,11 @@ import type { Message } from "../components/Messages";
 import type { User } from "../components/Chats";
 import { AuthContext } from "../AuthContext";
 import { useAudioRecorder } from "../components/MediaRecorder";
-
+import { formatTime } from "../components/FormatTime";
+import { useChatStore } from "../components/ChatStore";
 
 function Chat() {
+
   const { theme } = useContext(ThemeContext);
   const [attach, setAttach] = useState<File | undefined>(undefined);
   const [image, setImage] = useState("");
@@ -41,8 +43,9 @@ function Chat() {
   const { user, token } = useContext(AuthContext);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
-
-const {record,setRecord, recording, timer, handleAudio, handleStop, handleCancel} =useAudioRecorder()
+  const {record,setRecord, recording, timer, handleAudio, handleStop, handleCancel} =useAudioRecorder()
+  const{fetching, fetchingAll} = useChatStore({selectedUser, setMessages, setAllMessages})
+  const [loading, setLoading]=useState<boolean>(false);
 
   useEffect(() => {
     const handleSize = () => {
@@ -66,33 +69,17 @@ const {record,setRecord, recording, timer, handleAudio, handleStop, handleCancel
   
   }, [user, showSidebar]);
 
-
-  const fetchingAll = useCallback(async () => {
-    const response = await fetch(`${apiUrl}/api/messages/`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    setAllMessages(data);
-  },[apiUrl, token,setAllMessages]);
-  const fetching = async () => {
-    const response = await fetch(`${apiUrl}/api/messages/${selectedUser?._id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    setMessages(data);
-  };
     useEffect(() => {
+      setLoading(true)
       fetchingAll()
     fetch(`${apiUrl}/api/`)
       .then((res) => res.json())
       .then((data) => {
         setUsers(data);
         setFilteredUsers(data);
+        setLoading(false)
       });
+
   }, [apiUrl, fetchingAll]);
 
   useEffect(() => {
@@ -122,14 +109,9 @@ const {record,setRecord, recording, timer, handleAudio, handleStop, handleCancel
       }
       })
 
-   
-  //  const interval= setInterval(()=>{
-  //     fetching()     
-  //   },5000)
     return () => {
       socket.off("message");
       socket.off('typing')
-      // clearInterval(interval)
     };
 
   
@@ -149,7 +131,6 @@ const {record,setRecord, recording, timer, handleAudio, handleStop, handleCancel
       reader.readAsDataURL(file);
     }
   };
-
   
   const handleEmojis = (e: React.MouseEvent<HTMLButtonElement>) => {
     const emoji = e.target as HTMLButtonElement;
@@ -205,11 +186,6 @@ const {record,setRecord, recording, timer, handleAudio, handleStop, handleCancel
     }
   };
 
-  const formatTime = (time: number) => {
-    const minutes = Math.floor((time % 3600) / 60);
-    const seconds = Math.floor(time % 60);
-    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2,"0")}`;
-  };
 
   const handleTyping=(e:React.KeyboardEvent<HTMLInputElement>)=>{
     socket.emit("typing", {receiver: selectedUser?._id, sender:user?._id})
@@ -217,6 +193,7 @@ const {record,setRecord, recording, timer, handleAudio, handleStop, handleCancel
       setTyping(false)
     }
   }
+
   return (
     <>
       <div>
@@ -233,6 +210,7 @@ const {record,setRecord, recording, timer, handleAudio, handleStop, handleCancel
                 filteredUsers={filteredUsers}
                 setFilteredUsers={setFilteredUsers}
                 allMessages={allMessages}
+                loading={loading}
                 setShowChat={setShowChat}/>
          </>
           )}

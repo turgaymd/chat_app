@@ -6,8 +6,9 @@ import Settings from "./Settings";
 import Contacts from "./Contacts"
 import type { Message } from "./Messages";
 import { AuthContext } from "../AuthContext";
-
+import Loading from "../Loading";
 import { ApiContext } from "../ApiContext";
+
 export type User={
     _id:string,
     username?:string,
@@ -26,10 +27,11 @@ type Props={
     setSelectedUser:(selected:User)=>void,
     setShowSidebar:(showSidebar:boolean)=>void,
     setShowChat:(showChat:boolean)=>void
+    loading:boolean,
 }
 
 export type chatUser=User & {lastMessage?:Message}
-const Chats=({allMessages, selectedUser,setSelectedUser, messageCount,  filteredUsers,setFilteredUsers, users}:Props)=>{
+const Chats=({allMessages, selectedUser,setSelectedUser, messageCount,  filteredUsers,setFilteredUsers, users, loading}:Props)=>{
 const {theme}=useContext(ThemeContext)
 const {user}=useContext(AuthContext)
 const [search, setSearch]=useState('')
@@ -43,7 +45,8 @@ const chatUsers= allMessages.length>0 ? users.filter((u:chatUser)=> allMessages.
 ) : users
 
  const filterUsers = search.trim() ? chatUsers.filter((item)=>item?.username?.toLocaleLowerCase().includes(search.toLocaleLowerCase())) : chatUsers
-    return(
+
+ return(
         <>
           <div className={`${theme==='dark' ? 'darkBg': 'ligthBg'} col-md-3 col-12 chats tab-content`} id="nav-tabContent" >
             <div className="sidebar-left tab-pane fade show active" id="chat" role="tabpanel" aria-labelledby="chat-tab">
@@ -57,7 +60,9 @@ const chatUsers= allMessages.length>0 ? users.filter((u:chatUser)=> allMessages.
                 </form>
               </div>     
              <div className="sidebar-body">
+                           {loading ?  <div className="text-center"><Loading/></div> : <></> } 
                <div className="users"> 
+                    
                 {
                 filterUsers.map((item)=>{                            
                 return (        
@@ -65,6 +70,7 @@ const chatUsers= allMessages.length>0 ? users.filter((u:chatUser)=> allMessages.
                 onClick={()=> setSelectedUser(item)}
                 
             key={item?._id}>
+             
                   <div className="user position-relative">
                   {item?.username!==user?.username && ( 
                     <div className="d-flex align-items-center justify-content-between">                 

@@ -15,14 +15,12 @@ const Settings=({setFilteredUsers}:Props)=>{
   const {theme}=useContext(ThemeContext)
   const {user,setUser, token}=useContext(AuthContext)
   const isDark=theme==="dark";
-  // const [newPassword, setNewPassword]=useState('')
   const [edit,setEdit]=useState(true)
-  // const [about,setAbout]=useState(user?.about || 'change your thoughts and you change your world')
   const [image,setImage]=useState(user?.image || '')
   const [username,setUsername]=useState(user?.username || '') 
   const userId=user ? user._id : null
   const userRef=useRef<HTMLInputElement>(null)
-  // const aboutRef=useRef<HTMLTextAreaElement>(null)
+  
 useEffect(()=>{
 if(user){
   setUsername(user.username || '')
