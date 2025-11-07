@@ -1,6 +1,5 @@
 A full-stack real-time chat web application.It supports live messaging.
 Live Demo: https://chat-app-bxnf.vercel.app/.
-![image](https://media.geeksforgeeks.org/wp-content/cdn-uploads/
 # Technologies I used:
 Next.js
 TypeScript
@@ -17,4 +16,3 @@ MongoDB
 ✅ Emoji Picker
 ✅ Dark/Light Mode
 
-![image](https://media.geeksforgeeks.org/wp-content/cdn-uploads/
