@@ -12,6 +12,6 @@ MongoDB
 # FEATURES
 ✅ Real-time messaging
 ✅ Image Upload
-Audio Recording
-Emoji Picker
-Dark/Light Mode
+✅ Audio Recording
+✅ Emoji Picker
+✅ Dark/Light Mode
