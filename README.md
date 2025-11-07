@@ -10,8 +10,8 @@ Express.js
 MongoDB
 
 # FEATURES
-Real-time messaging
-Image Upload
+✅ Real-time messaging
+✅ Image Upload
 Audio Recording
 Emoji Picker
 Dark/Light Mode
