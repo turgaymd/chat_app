@@ -1,5 +1,6 @@
 A full-stack real-time chat web application.It supports live messaging.
-Technologies I used:
+
+ Technologies I used:
 Next.js
 TypeScript
 Tailwind CSS
